@@ -5,6 +5,7 @@ import java.util.Date;
 
 @Entity
 @Table(name="students_data")
+
 public class Student {
 
     @Id
