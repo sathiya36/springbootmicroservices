@@ -1,0 +1,42 @@
+server:
+  port: 8079
+
+spring:
+  application:
+    name: apigateway
+  cloud:
+    gateway:
+      discovery.locator:
+        enabled: false
+        lowerCaseServiceId: true
+# http://localhost:8080/dummy-userms/users -> http://localhost:8081/users
+      routes:
+        - id: studentmsid
+          uri: lb://studentms
+#          uri: http://localhost:8081
+          predicates:
+            - Path= /dummy-studentms/**
+          filters:
+            - RewritePath= /dummy-studentms/(?<path>.*), /$\{path}
+
+        - id: studentmsclientid
+          uri: lb://studentms-client
+          predicates:
+            - Path= /dummy-studentms-client/**
+          filters:
+            - RewritePath= /dummy-studentms-client/(?<path>.*), /$\{path}
+
+
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+# Actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
